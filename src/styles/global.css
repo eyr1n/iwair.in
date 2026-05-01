@@ -3,41 +3,41 @@
 @import "@fontsource/anton";
 
 @utility chromatic-text {
-    @apply relative font-[Anton] font-normal text-transparent;
+  @apply relative font-[Anton] font-normal text-transparent;
 
-    &::before,
-    &::after {
-        @apply pointer-events-none absolute inset-0 mix-blend-screen;
-        content: attr(data-text);
-    }
+  &::before,
+  &::after {
+    @apply pointer-events-none absolute inset-0 mix-blend-screen;
+    content: attr(data-text);
+  }
 
-    &::before {
-        color: var(--color-cyan-300);
-        transform: translate(-0.03em, -0.015em);
-    }
+  &::before {
+    color: var(--color-cyan-300);
+    transform: translate(-0.03em, -0.015em);
+  }
 
-    &::after {
-        color: var(--color-rose-500);
-        transform: translate(0.03em, 0.015em);
-    }
+  &::after {
+    color: var(--color-rose-500);
+    transform: translate(0.03em, 0.015em);
+  }
 }
 
 @utility chromatic-border {
-    @apply relative;
+  @apply relative border-8 border-transparent;
 
-    &::before,
-    &::after {
-        @apply pointer-events-none absolute inset-0 border-8 mix-blend-screen;
-        content: "";
-    }
+  &::before,
+  &::after {
+    @apply pointer-events-none absolute -inset-2 border-8 mix-blend-screen;
+    content: "";
+  }
 
-    &::before {
-        border-color: var(--color-cyan-300);
-        transform: translate(-0.1rem, -0.05rem);
-    }
+  &::before {
+    border-color: var(--color-cyan-300);
+    transform: translate(-0.1rem, -0.05rem);
+  }
 
-    &::after {
-        border-color: var(--color-rose-500);
-        transform: translate(0.1rem, 0.05rem);
-    }
+  &::after {
+    border-color: var(--color-rose-500);
+    transform: translate(0.1rem, 0.05rem);
+  }
 }
