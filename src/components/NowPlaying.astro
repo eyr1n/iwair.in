@@ -19,6 +19,8 @@
 </div>
 
 <script>
+  const REFRESH_INTERVAL_MS = 30000;
+
   interface SpotifyNowPlaying {
     album: {
       name?: string;
@@ -40,68 +42,73 @@
     url?: string;
   }
 
-  const nowPlayingElement = document.querySelector("[data-nowplaying]")!;
-  const artwork = nowPlayingElement.querySelector("[data-nowplaying-artwork]")!;
-  const name = nowPlayingElement.querySelector("[data-nowplaying-name]")!;
-  const album = nowPlayingElement.querySelector("[data-nowplaying-album]")!;
-  const artists = nowPlayingElement.querySelector("[data-nowplaying-artists]")!;
-
-  const createExternalLink = (
-    href: string | undefined,
-    text: string | undefined,
-  ) => {
-    const link = document.createElement("a");
-    link.href = href ?? "";
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.className = "hover:underline";
-    link.textContent = text ?? "";
-
-    return link;
-  };
-
-  const createArtworkImage = (src: string | undefined) => {
+  function createImage(url: string | undefined) {
     const image = document.createElement("img");
     image.className = "h-full w-full object-cover";
-    image.src = src ?? "";
+    image.src = url ?? "";
     image.alt = "artwork";
-
     return image;
-  };
+  }
 
-  const createArtistLinks = (artistItems: SpotifyNowPlaying["artists"]) =>
-    artistItems.flatMap((artist, index) => [
-      ...(index > 0 ? [document.createTextNode(", ")] : []),
-      createExternalLink(artist.url, artist.name),
-    ]);
+  function createLink(name: string | undefined, url: string | undefined) {
+    const link = document.createElement("a");
+    link.className = "hover:underline";
+    link.href = url ?? "";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = name ?? "";
+    return link;
+  }
+
+  function clearNowPlaying() {
+    artwork.replaceChildren();
+    name.textContent = "No track playing";
+    album.replaceChildren();
+    artists.replaceChildren();
+  }
+
+  const container = document.querySelector("[data-nowplaying]")!;
+  const artwork = container.querySelector("[data-nowplaying-artwork]")!;
+  const name = container.querySelector("[data-nowplaying-name]")!;
+  const album = container.querySelector("[data-nowplaying-album]")!;
+  const artists = container.querySelector("[data-nowplaying-artists]")!;
 
   const fetchNowPlaying = () =>
     fetch("https://nowplaying.iwair.in")
       .then((res) => res.json())
       .then((nowPlaying: SpotifyNowPlaying) => {
-        if (nowPlaying.is_playing) {
-          const artworkSrc = nowPlaying?.images.sort(
-            (a, b) =>
-              Math.max(b.width ?? 0, b.height ?? 0) -
-              Math.max(a.width ?? 0, a.height ?? 0),
-          )[0]?.url;
-
-          artwork.replaceChildren(createArtworkImage(artworkSrc));
-          name.replaceChildren(
-            createExternalLink(nowPlaying.url, nowPlaying.name),
-          );
-          album.replaceChildren(
-            createExternalLink(nowPlaying.album.url, nowPlaying.album.name),
-          );
-          artists.replaceChildren(...createArtistLinks(nowPlaying.artists));
-        } else {
-          artwork.replaceChildren();
-          name.replaceChildren();
-          album.replaceChildren();
-          artists.replaceChildren();
+        if (!nowPlaying.is_playing) {
+          clearNowPlaying();
+          return;
         }
+
+        const artworkUrl = [...nowPlaying.images].sort(
+          (a, b) =>
+            Math.max(b.width ?? 0, b.height ?? 0) -
+            Math.max(a.width ?? 0, a.height ?? 0),
+        )[0].url;
+        artwork.replaceChildren(createImage(artworkUrl));
+        name.replaceChildren(createLink(nowPlaying.name, nowPlaying.url));
+        album.replaceChildren(
+          createLink(nowPlaying.album.name, nowPlaying.album.url),
+        );
+        artists.replaceChildren(
+          ...nowPlaying.artists.reduce<Node[]>(
+            (nodes, artist) => [
+              ...nodes,
+              ...(nodes.length > 0 ? [document.createTextNode(", ")] : []),
+              createLink(artist.name, artist.url),
+            ],
+            [],
+          ),
+        );
       })
-      .then(() => window.setTimeout(fetchNowPlaying, 30000));
+      .catch(() => {
+        clearNowPlaying();
+      })
+      .finally(() => {
+        window.setTimeout(fetchNowPlaying, REFRESH_INTERVAL_MS);
+      });
 
   fetchNowPlaying();
 </script>
