@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@import '@fontsource/dotgothic16';
+
+@theme inline {
+    --font-sans: var(--font-dotgothic16);
+}
