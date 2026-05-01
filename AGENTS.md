@@ -1,0 +1,6 @@
+- pnpm使ってます
+- astro使ってます
+- tailwindcss使ってます
+- コミット前に `pnpm format` して整形してください
+- コミット前に `pnpm build` してビルドが通るか確認してください
+- conventional commitsを意識してコミットメッセージを書いてください

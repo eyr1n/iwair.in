@@ -3,16 +3,121 @@ import { Image } from "astro:assets";
 import rinIwai from "../assets/rin_iwai.png";
 
 import "../styles/global.css";
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const publications = [
+  {
+    date: "January 2026",
+    author: "R. Iwai, J. Domke, E. Vatai, and Y. Sato",
+    title:
+      "Prototyping an Autotuning Framework for Program Optimization Using Exo Language",
+    booktitle:
+      "Proceedings of the Supercomputing Asia and International Conference on High Performance Computing in Asia Pacific Region Workshops",
+    url: "https://doi.org/10.1145/3784828.3785400",
+  },
+  {
+    date: "September 2024",
+    author: "R. Iwai, E. Vatai, J. Domke, and Y. Sato",
+    title:
+      "Evaluation of Vectorization Methods on Arm SVE Using the Exo Language",
+    booktitle:
+      "2024 IEEE International Conference on Cluster Computing Workshops (CLUSTER Workshops)",
+    url: "https://doi.org/10.1109/clusterworkshops61563.2024.00047",
+  },
+];
+
+const education = [
+  {
+    period: "April 2025 - Present",
+    degree: "Master of Engineering",
+    affiliation:
+      "Computer Science and Engineering, Toyohashi University of Technology",
+  },
+  {
+    period: "April 2021 - March 2025",
+    degree: "Bachelor of Engineering",
+    affiliation:
+      "Computer Science and Engineering, Toyohashi University of Technology",
+  },
+];
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+
     <title>Rin Iwai</title>
+    <meta name="title" content="Rin Iwai" />
+    <meta name="description" content="Rin Iwai" />
+    <link rel="canonical" href={canonicalURL} />
   </head>
-  <body class="prose">
-    <h1>Rin Iwai</h1>
-    <Image src={rinIwai} alt="Rin Iwai" />
+
+  <body>
+    <main class="prose mx-auto max-w-(--breakpoint-md) px-4 py-8">
+      <header class="flex flex-col gap-8 md:flex-row md:items-start">
+        <Image src={rinIwai} alt="Rin Iwai" class="not-prose w-40" />
+        <div>
+          <h1>Rin Iwai / 岩井 凜</h1>
+          <p>
+            Master's student<br />
+            Department of Computer Science and Engineering, Toyohashi University of
+            Technology
+          </p>
+        </div>
+      </header>
+
+      <section>
+        <h2>Publications</h2>
+        <ul>
+          {
+            publications.map((publication) =>
+              //prettier-ignore
+              <li>
+                {publication.date}: {publication.author},
+                "<a href={publication.url} target="_blank" rel="noopener noreferrer">{publication.title}</a>,"
+                in {publication.booktitle}
+              </li>,
+            )
+          }
+        </ul>
+      </section>
+
+      <section>
+        <h2>Education</h2>
+        <ul>
+          {
+            education.map((item) => (
+              <li>
+                {item.period}: {item.degree}, {item.affiliation}
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section>
+        <h2>Links</h2>
+        <ul>
+          <li>
+            ORCID: <a
+              href="https://orcid.org/0009-0008-9876-1639"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              0009-0008-9876-1639
+            </a>
+          </li>
+          <li>
+            GitHub: <a
+              href="https://github.com/eyr1n"
+              target="_blank"
+              rel="noopener noreferrer">@eyr1n</a
+            >
+          </li>
+        </ul>
+      </section>
+    </main>
   </body>
 </html>
