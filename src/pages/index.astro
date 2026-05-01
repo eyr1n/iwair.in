@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import NowPlaying from "../components/NowPlaying.astro";
 import rinIwai from "~/assets/rin_iwai.png";
 
 import "~/src/styles/global.css";
@@ -147,6 +148,15 @@ const links = [
             ))
           }
         </ul>
+      </section>
+
+      <section>
+        <h2>
+          <span class="chromatic-text" data-text="Now Playing..."
+            >Now Playing...
+          </span>
+        </h2>
+        <NowPlaying />
       </section>
     </main>
   </body>

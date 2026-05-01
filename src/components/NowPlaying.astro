@@ -1,0 +1,97 @@
+<now-playing>
+  <div
+    class="not-prose grid max-w-80 grid-cols-[auto_1fr] overflow-hidden rounded-md border-2 border-slate-200"
+  >
+    <div class="h-[84px] w-[84px]" data-nowplaying-artwork></div>
+
+    <div
+      class="grid h-[84px] grid-rows-3 items-center border-l-2 border-slate-200 p-1.5"
+    >
+      <div
+        class="overflow-hidden text-sm font-semibold text-ellipsis whitespace-nowrap"
+        data-nowplaying-name
+      >
+      </div>
+
+      <div class="grid grid-cols-[auto_auto] justify-start gap-x-1">
+        <div class="overflow-hidden text-xs text-ellipsis whitespace-nowrap">
+          📀 <span data-nowplaying-album></span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-[auto_auto] justify-start gap-x-1">
+        <div class="overflow-hidden text-xs text-ellipsis whitespace-nowrap">
+          👤 <span data-nowplaying-artists></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</now-playing>
+
+<script>
+  interface SpotifyNowPlaying {
+    album: {
+      name?: string;
+      url?: string;
+    };
+    artists: {
+      name?: string;
+      url?: string;
+    }[];
+    duration_ms?: number;
+    images: {
+      url: string;
+      height: number | null;
+      width: number | null;
+    }[];
+    is_playing?: boolean;
+    name?: string;
+    progress_ms?: number | null;
+    url?: string;
+  }
+
+  class NowPlaying extends HTMLElement {
+    #timeoutId = Promise.resolve(0);
+
+    async connectedCallback() {
+      const artwork = this.querySelector("[data-nowplaying-artwork]")!;
+      const name = this.querySelector("[data-nowplaying-name]")!;
+      const album = this.querySelector("[data-nowplaying-album]")!;
+      const artists = this.querySelector("[data-nowplaying-artists]")!;
+
+      window.clearTimeout(await this.#timeoutId);
+
+      const fetchNowPlaying = () =>
+        fetch("https://nowplaying.iwair.in")
+          .then((res) => res.json())
+          .then((nowPlaying: SpotifyNowPlaying) => {
+            if (nowPlaying.is_playing) {
+              const artworkSrc = nowPlaying?.images.sort(
+                (a, b) =>
+                  Math.max(b.width ?? 0, b.height ?? 0) -
+                  Math.max(a.width ?? 0, a.height ?? 0),
+              )[0]?.url;
+              artwork.innerHTML = `<img class="h-full w-full object-cover" src=${artworkSrc} alt="artwork" />`;
+              name.innerHTML = `<a href=${nowPlaying.url} target="_blank" class="hover:underline">${nowPlaying.name}</a>`;
+              album.innerHTML = `<a href=${nowPlaying.album.url} target="_blank" class="hover:underline">${nowPlaying.album.name}</a>`;
+              artists.innerHTML = nowPlaying.artists
+                .map(
+                  (artist) =>
+                    `<a href=${artist.url} target="_blank" class="hover:underline">${artist.name}</a>`,
+                )
+                .join(", ");
+            } else {
+              artwork.innerHTML = "";
+              name.innerHTML = "";
+              album.innerHTML = "";
+              artists.innerHTML = "";
+            }
+          })
+          .then(() => window.setTimeout(fetchNowPlaying, 30000));
+
+      this.#timeoutId = fetchNowPlaying();
+    }
+  }
+
+  customElements.define("now-playing", NowPlaying);
+</script>
