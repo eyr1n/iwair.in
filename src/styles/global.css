@@ -23,7 +23,7 @@
 }
 
 @utility chromatic-border {
-  @apply relative border-8 border-transparent;
+  @apply relative border-8 border-transparent px-[0.1rem] py-[0.05rem];
 
   &::before,
   &::after {
