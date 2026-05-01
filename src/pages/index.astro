@@ -72,14 +72,18 @@ const links = [
     <link rel="canonical" href={canonicalURL} />
   </head>
 
-  <body class="bg-gray-900">
+  <body class="retro-surface bg-gray-900">
     <main
-      class="prose prose-invert mx-auto max-w-(--breakpoint-md) px-4 py-8 font-[DotGothic16]"
+      class="retro-screen prose prose-invert mx-auto max-w-(--breakpoint-md) px-4 py-8 font-[DotGothic16]"
     >
       <section class="flex flex-col gap-8 md:flex-row md:items-start">
-        <Image src={rinIwai} alt="Rin Iwai" class="not-prose w-40" />
+        <div class="glitch-portrait not-prose">
+          <Image src={rinIwai} alt="Rin Iwai" class="w-40" />
+        </div>
         <div>
-          <h1>Rin Iwai / 岩井 凜</h1>
+          <h1 class="glitch-text" data-text="Rin Iwai / 岩井 凜">
+            Rin Iwai / 岩井 凜
+          </h1>
           <p>
             Master's student<br />
             Department of Computer Science and Engineering, Toyohashi University of
@@ -89,7 +93,7 @@ const links = [
       </section>
 
       <section>
-        <h2>Publications</h2>
+        <h2 class="glitch-text" data-text="Publications">Publications</h2>
         <ul>
           {
             publications.map((publication) =>
@@ -105,7 +109,7 @@ const links = [
       </section>
 
       <section>
-        <h2>Education</h2>
+        <h2 class="glitch-text" data-text="Education">Education</h2>
         <ul>
           {
             education.map((item) => (
@@ -118,7 +122,7 @@ const links = [
       </section>
 
       <section>
-        <h2>Links</h2>
+        <h2 class="glitch-text" data-text="Links">Links</h2>
         <ul>
           {
             links.map((link) => (
