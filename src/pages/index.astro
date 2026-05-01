@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import { Image } from "astro:assets";
+import rinIwai from "../assets/rin_iwai.png";
 ---
 
 <html lang="en">
@@ -10,5 +12,6 @@ import "../styles/global.css";
 	</head>
 	<body class="prose">
 		<h1>Rin Iwai</h1>
+		<Image src={rinIwai} alt="Rin Iwai" />
 	</body>
 </html>
