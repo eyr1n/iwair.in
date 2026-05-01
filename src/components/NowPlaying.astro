@@ -1,28 +1,19 @@
 <div
-  class="not-prose grid max-w-80 grid-cols-[auto_1fr] overflow-hidden rounded-md border-2 border-slate-200"
+  class="chromatic-border not-prose grid max-w-80 grid-cols-[auto_1fr]"
   data-nowplaying
 >
-  <div class="h-[84px] w-[84px]" data-nowplaying-artwork></div>
-
-  <div
-    class="grid h-[84px] grid-rows-3 items-center border-l-2 border-slate-200 p-1.5"
-  >
+  <div class="h-24 w-24" data-nowplaying-artwork></div>
+  <div class="grid h-24 grid-rows-3 items-center p-2">
     <div
-      class="overflow-hidden text-sm font-semibold text-ellipsis whitespace-nowrap"
+      class="overflow-hidden font-bold text-ellipsis whitespace-nowrap"
       data-nowplaying-name
     >
     </div>
-
-    <div class="grid grid-cols-[auto_auto] justify-start gap-x-1">
-      <div class="overflow-hidden text-xs text-ellipsis whitespace-nowrap">
-        📀 <span data-nowplaying-album></span>
-      </div>
+    <div class="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
+      📀 <span data-nowplaying-album></span>
     </div>
-
-    <div class="grid grid-cols-[auto_auto] justify-start gap-x-1">
-      <div class="overflow-hidden text-xs text-ellipsis whitespace-nowrap">
-        👤 <span data-nowplaying-artists></span>
-      </div>
+    <div class="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
+      👤 <span data-nowplaying-artists></span>
     </div>
   </div>
 </div>
@@ -55,6 +46,35 @@
   const album = nowPlayingElement.querySelector("[data-nowplaying-album]")!;
   const artists = nowPlayingElement.querySelector("[data-nowplaying-artists]")!;
 
+  const createExternalLink = (
+    href: string | undefined,
+    text: string | undefined,
+  ) => {
+    const link = document.createElement("a");
+    link.href = href ?? "";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.className = "hover:underline";
+    link.textContent = text ?? "";
+
+    return link;
+  };
+
+  const createArtworkImage = (src: string | undefined) => {
+    const image = document.createElement("img");
+    image.className = "h-full w-full object-cover";
+    image.src = src ?? "";
+    image.alt = "artwork";
+
+    return image;
+  };
+
+  const createArtistLinks = (artistItems: SpotifyNowPlaying["artists"]) =>
+    artistItems.flatMap((artist, index) => [
+      ...(index > 0 ? [document.createTextNode(", ")] : []),
+      createExternalLink(artist.url, artist.name),
+    ]);
+
   const fetchNowPlaying = () =>
     fetch("https://nowplaying.iwair.in")
       .then((res) => res.json())
@@ -65,20 +85,20 @@
               Math.max(b.width ?? 0, b.height ?? 0) -
               Math.max(a.width ?? 0, a.height ?? 0),
           )[0]?.url;
-          artwork.innerHTML = `<img class="h-full w-full object-cover" src=${artworkSrc} alt="artwork" />`;
-          name.innerHTML = `<a href=${nowPlaying.url} target="_blank" class="hover:underline">${nowPlaying.name}</a>`;
-          album.innerHTML = `<a href=${nowPlaying.album.url} target="_blank" class="hover:underline">${nowPlaying.album.name}</a>`;
-          artists.innerHTML = nowPlaying.artists
-            .map(
-              (artist) =>
-                `<a href=${artist.url} target="_blank" class="hover:underline">${artist.name}</a>`,
-            )
-            .join(", ");
+
+          artwork.replaceChildren(createArtworkImage(artworkSrc));
+          name.replaceChildren(
+            createExternalLink(nowPlaying.url, nowPlaying.name),
+          );
+          album.replaceChildren(
+            createExternalLink(nowPlaying.album.url, nowPlaying.album.name),
+          );
+          artists.replaceChildren(...createArtistLinks(nowPlaying.artists));
         } else {
-          artwork.innerHTML = "";
-          name.innerHTML = "";
-          album.innerHTML = "";
-          artists.innerHTML = "";
+          artwork.replaceChildren();
+          name.replaceChildren();
+          album.replaceChildren();
+          artists.replaceChildren();
         }
       })
       .then(() => window.setTimeout(fetchNowPlaying, 30000));
