@@ -41,6 +41,24 @@ const education = [
       "Computer Science and Engineering, Toyohashi University of Technology",
   },
 ];
+
+const links = [
+  {
+    label: "ORCID",
+    text: "0009-0008-9876-1639",
+    url: "https://orcid.org/0009-0008-9876-1639",
+  },
+  {
+    label: "GitHub",
+    text: "@eyr1n",
+    url: "https://github.com/eyr1n",
+  },
+  {
+    label: "Twitter",
+    text: "@iwairin",
+    url: "https://x.com/iwairin",
+  },
+];
 ---
 
 <html lang="en">
@@ -100,22 +118,16 @@ const education = [
       <section>
         <h2>Links</h2>
         <ul>
-          <li>
-            ORCID: <a
-              href="https://orcid.org/0009-0008-9876-1639"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              0009-0008-9876-1639
-            </a>
-          </li>
-          <li>
-            GitHub: <a
-              href="https://github.com/eyr1n"
-              target="_blank"
-              rel="noopener noreferrer">@eyr1n</a
-            >
-          </li>
+          {
+            links.map((link) => (
+              <li>
+                {link.label}:{" "}
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                  {link.text}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </section>
     </main>
