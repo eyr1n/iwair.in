@@ -3,7 +3,7 @@
 @import "@fontsource/anton";
 
 @utility chromatic-text {
-  @apply relative font-[Anton] font-normal text-transparent;
+  @apply relative inline-block font-[Anton] font-normal text-transparent;
 
   &::before,
   &::after {
