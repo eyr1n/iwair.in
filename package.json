@@ -1,7 +1,7 @@
 {
   "name": "iwair.in",
+  "private": true,
   "type": "module",
-  "version": "0.0.1",
   "engines": {
     "node": ">=22.12.0"
   },
