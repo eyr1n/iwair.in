@@ -62,43 +62,62 @@
   });
 
   const nameChildren = computed(() => {
-    if (!nowPlaying()?.is_playing) {
+    const name = nowPlaying()?.name;
+    const url = nowPlaying()?.url;
+    if (!nowPlaying()?.is_playing || !name) {
       return [document.createTextNode("No track playing")];
+    }
+    if (!url) {
+      return [document.createTextNode(name)];
     }
     const link = document.createElement("a");
     link.className = "hover:underline";
-    link.href = nowPlaying()?.url ?? "";
+    link.href = url;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = nowPlaying()?.name ?? null;
+    link.textContent = name;
     return [link];
   });
 
   const albumChildren = computed(() => {
-    if (!nowPlaying()?.is_playing) {
+    const name = nowPlaying()?.album.name;
+    const url = nowPlaying()?.album.url;
+    if (!nowPlaying()?.is_playing || !name) {
       return [];
+    }
+    if (!url) {
+      return [document.createTextNode(name)];
     }
     const link = document.createElement("a");
     link.className = "hover:underline";
-    link.href = nowPlaying()?.album.url ?? "";
+    link.href = url;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = nowPlaying()?.album.name ?? null;
+    link.textContent = name;
     return [link];
   });
 
   const artistsChildren = computed(() => {
-    const artists = nowPlaying()?.artists;
+    const artists = nowPlaying()?.artists.flatMap((artist) =>
+      artist.name ? [{ name: artist.name, url: artist.url }] : [],
+    );
     if (!nowPlaying()?.is_playing || !artists || artists.length === 0) {
       return [];
     }
     return artists.reduce((nodes, artist) => {
+      if (!artist.url) {
+        return [
+          ...nodes,
+          ...(nodes.length > 0 ? [document.createTextNode(", ")] : []),
+          document.createTextNode(artist.name),
+        ];
+      }
       const link = document.createElement("a");
       link.className = "hover:underline";
       link.href = artist.url ?? "";
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.textContent = artist.name ?? null;
+      link.textContent = artist.name;
       return [
         ...nodes,
         ...(nodes.length > 0 ? [document.createTextNode(", ")] : []),
