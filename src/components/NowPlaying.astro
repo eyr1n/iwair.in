@@ -21,8 +21,6 @@
 <script>
   import { computed, effect, signal } from "alien-signals";
 
-  const REFRESH_INTERVAL_MS = 30000;
-
   interface SpotifyNowPlaying {
     album: {
       name?: string;
@@ -132,7 +130,7 @@
         nowPlaying(null);
       })
       .finally(() => {
-        window.setTimeout(fetchNowPlaying, REFRESH_INTERVAL_MS);
+        window.setTimeout(fetchNowPlaying, 30000);
       });
 
   fetchNowPlaying();
