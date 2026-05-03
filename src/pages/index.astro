@@ -162,5 +162,5 @@ const links = [
 <script>
   import { NowPlaying } from "~/src/components/NowPlaying";
 
-  document.querySelector("[data-nowplaying]")?.replaceChildren(NowPlaying());
+  document.querySelector("[data-nowplaying]")?.appendChild(NowPlaying());
 </script>
