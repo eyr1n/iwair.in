@@ -33,8 +33,12 @@ function bindChildren(
 
 export function NowPlaying() {
   const nowPlaying = signal<SpotifyNowPlaying | null>(null);
+
+  const currentTrack = computed(() =>
+    nowPlaying()?.is_playing ? nowPlaying() : null,
+  );
   const artworkUrl = computed(() => {
-    const images = nowPlaying()?.images;
+    const images = currentTrack()?.images;
     if (!images || images.length === 0) {
       return null;
     }
@@ -44,13 +48,13 @@ export function NowPlaying() {
         Math.max(a.width ?? 0, a.height ?? 0),
     )[0].url;
   });
-  const trackName = computed(() => nowPlaying()?.name ?? null);
-  const trackUrl = computed(() => nowPlaying()?.url ?? null);
-  const albumName = computed(() => nowPlaying()?.album.name ?? null);
-  const albumUrl = computed(() => nowPlaying()?.album.url ?? null);
+  const trackName = computed(() => currentTrack()?.name ?? null);
+  const trackUrl = computed(() => currentTrack()?.url ?? null);
+  const albumName = computed(() => currentTrack()?.album.name ?? null);
+  const albumUrl = computed(() => currentTrack()?.album.url ?? null);
   const artists = computed(
     () =>
-      nowPlaying()?.artists.flatMap((artist) =>
+      currentTrack()?.artists.flatMap((artist) =>
         artist.name ? [{ name: artist.name, url: artist.url }] : [],
       ) ?? [],
   );
