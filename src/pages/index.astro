@@ -1,6 +1,5 @@
 ---
 import { Image } from "astro:assets";
-import NowPlaying from "~/src/components/NowPlaying.astro";
 import rinIwai from "~/assets/rin_iwai.png";
 
 import "~/src/styles/global.css";
@@ -154,8 +153,14 @@ const links = [
             >Now Playing...
           </span>
         </h2>
-        <NowPlaying />
+        <div class="contents" data-nowplaying></div>
       </section>
     </main>
   </body>
 </html>
+
+<script>
+  import { NowPlaying } from "~/src/components/NowPlaying";
+
+  document.querySelector("[data-nowplaying]")?.replaceChildren(NowPlaying());
+</script>
