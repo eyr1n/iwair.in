@@ -1,4 +1,4 @@
-import { computed, effect, signal } from "alien-signals";
+import { effect, signal } from "alien-signals";
 
 interface SpotifyNowPlaying {
   album: {
@@ -34,7 +34,7 @@ function bindChildren(
 export function NowPlaying() {
   const nowPlaying = signal<SpotifyNowPlaying | null>(null);
 
-  const artworkChildren = computed(() => {
+  const artwork = bindChildren(<div class="h-24 w-24" />, () => {
     const images = nowPlaying()?.images;
     if (!nowPlaying()?.is_playing || !images || images.length === 0) {
       return [];
@@ -47,28 +47,31 @@ export function NowPlaying() {
     return [<img class="h-full w-full object-cover" src={url} alt="artwork" />];
   });
 
-  const nameChildren = computed(() => {
-    const name = nowPlaying()?.name;
-    const url = nowPlaying()?.url;
-    if (!nowPlaying()?.is_playing || !name) {
-      return [document.createTextNode("No track playing")];
-    }
-    if (!url) {
-      return [document.createTextNode(name)];
-    }
-    return [
-      <a
-        class="hover:underline"
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {name}
-      </a>,
-    ];
-  });
+  const name = bindChildren(
+    <div class="overflow-hidden font-bold text-ellipsis whitespace-nowrap" />,
+    () => {
+      const name = nowPlaying()?.name;
+      const url = nowPlaying()?.url;
+      if (!nowPlaying()?.is_playing || !name) {
+        return [document.createTextNode("No track playing")];
+      }
+      if (!url) {
+        return [document.createTextNode(name)];
+      }
+      return [
+        <a
+          class="hover:underline"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {name}
+        </a>,
+      ];
+    },
+  );
 
-  const albumChildren = computed(() => {
+  const album = bindChildren(<span />, () => {
     const name = nowPlaying()?.album.name;
     const url = nowPlaying()?.album.url;
     if (!nowPlaying()?.is_playing || !name) {
@@ -89,7 +92,7 @@ export function NowPlaying() {
     ];
   });
 
-  const artistsChildren = computed(() => {
+  const artists = bindChildren(<span />, () => {
     const artists = nowPlaying()?.artists.flatMap((artist) =>
       artist.name ? [{ name: artist.name, url: artist.url }] : [],
     );
@@ -117,14 +120,6 @@ export function NowPlaying() {
       [] as (Node | string)[],
     );
   });
-
-  const artwork = bindChildren(<div class="h-24 w-24" />, artworkChildren);
-  const name = bindChildren(
-    <div class="overflow-hidden font-bold text-ellipsis whitespace-nowrap" />,
-    nameChildren,
-  );
-  const album = bindChildren(<span />, albumChildren);
-  const artists = bindChildren(<span />, artistsChildren);
 
   function fetchNowPlaying() {
     fetch("https://nowplaying.iwair.in")
