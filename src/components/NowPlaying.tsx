@@ -34,9 +34,10 @@ function bindChildren(
 export function NowPlaying() {
   const nowPlaying = signal<SpotifyNowPlaying | null>(null);
 
-  const currentTrack = computed(() =>
-    nowPlaying()?.is_playing ? nowPlaying() : null,
-  );
+  const currentTrack = computed(() => {
+    const current = nowPlaying();
+    return current?.is_playing ? current : null;
+  });
   const artworkUrl = computed(() => {
     const images = currentTrack()?.images;
     if (!images || images.length === 0) {
