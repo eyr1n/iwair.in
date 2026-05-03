@@ -1,0 +1,175 @@
+<div
+  class="chromatic-border not-prose grid max-w-80 grid-cols-[auto_1fr]"
+  data-nowplaying
+>
+  <div class="h-24 w-24" data-nowplaying-artwork></div>
+  <div class="grid h-24 grid-rows-3 items-center p-2">
+    <div
+      class="overflow-hidden font-bold text-ellipsis whitespace-nowrap"
+      data-nowplaying-name
+    >
+    </div>
+    <div class="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
+      💿 <span data-nowplaying-album></span>
+    </div>
+    <div class="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
+      👤 <span data-nowplaying-artists></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { computed, effect, signal } from "alien-signals";
+
+  interface SpotifyNowPlaying {
+    album: {
+      name?: string;
+      url?: string;
+    };
+    artists: {
+      name?: string;
+      url?: string;
+    }[];
+    duration_ms?: number;
+    images: {
+      url: string;
+      height: number | null;
+      width: number | null;
+    }[];
+    is_playing?: boolean;
+    name?: string;
+    progress_ms?: number | null;
+    url?: string;
+  }
+
+  const nowPlaying = signal<SpotifyNowPlaying | null>(null);
+  const artworkUrl = computed(() => {
+    const images = nowPlaying()?.images;
+    if (!images || images.length === 0) {
+      return null;
+    }
+    return [...images].sort(
+      (a, b) =>
+        Math.max(b.width ?? 0, b.height ?? 0) -
+        Math.max(a.width ?? 0, a.height ?? 0),
+    )[0].url;
+  });
+  const trackName = computed(() => nowPlaying()?.name ?? null);
+  const trackUrl = computed(() => nowPlaying()?.url ?? null);
+  const albumName = computed(() => nowPlaying()?.album.name ?? null);
+  const albumUrl = computed(() => nowPlaying()?.album.url ?? null);
+  const artists = computed(
+    () =>
+      nowPlaying()?.artists.flatMap((artist) =>
+        artist.name ? [{ name: artist.name, url: artist.url }] : [],
+      ) ?? [],
+  );
+
+  const artworkChildren = () => {
+    const url = artworkUrl();
+    if (!url) {
+      return [];
+    }
+    const image = document.createElement("img");
+    image.className = "h-full w-full object-cover";
+    image.src = url;
+    image.alt = "artwork";
+    return [image];
+  };
+
+  const nameChildren = () => {
+    const name = trackName();
+    const url = trackUrl();
+    if (!name) {
+      return [document.createTextNode("No track playing")];
+    }
+    if (!url) {
+      return [document.createTextNode(name)];
+    }
+    const link = document.createElement("a");
+    link.className = "hover:underline";
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = name;
+    return [link];
+  };
+
+  const albumChildren = () => {
+    const name = albumName();
+    const url = albumUrl();
+    if (!name) {
+      return [];
+    }
+    if (!url) {
+      return [document.createTextNode(name)];
+    }
+    const link = document.createElement("a");
+    link.className = "hover:underline";
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = name;
+    return [link];
+  };
+
+  const artistsChildren = () => {
+    return artists().reduce((nodes, artist) => {
+      if (!artist.url) {
+        return [
+          ...nodes,
+          ...(nodes.length > 0 ? [document.createTextNode(", ")] : []),
+          document.createTextNode(artist.name),
+        ];
+      }
+      const link = document.createElement("a");
+      link.className = "hover:underline";
+      link.href = artist.url ?? "";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = artist.name;
+      return [
+        ...nodes,
+        ...(nodes.length > 0 ? [document.createTextNode(", ")] : []),
+        link,
+      ];
+    }, [] as Node[]);
+  };
+
+  const container = document.querySelector("[data-nowplaying]")!;
+  effect(() => {
+    container
+      .querySelector("[data-nowplaying-artwork]")
+      ?.replaceChildren(...artworkChildren());
+  });
+  effect(() => {
+    container
+      .querySelector("[data-nowplaying-name]")
+      ?.replaceChildren(...nameChildren());
+  });
+  effect(() => {
+    container
+      .querySelector("[data-nowplaying-album]")
+      ?.replaceChildren(...albumChildren());
+  });
+  effect(() => {
+    container
+      .querySelector("[data-nowplaying-artists]")
+      ?.replaceChildren(...artistsChildren());
+  });
+
+  const fetchNowPlaying = () =>
+    fetch("https://nowplaying.iwair.in")
+      .then((res) => res.json() as Promise<SpotifyNowPlaying>)
+      .then((res) => {
+        nowPlaying(res.is_playing ? res : null);
+      })
+      .catch(() => {
+        nowPlaying(null);
+      })
+      .finally(() => {
+        window.setTimeout(fetchNowPlaying, 30000);
+      });
+
+  fetchNowPlaying();
+</script>
