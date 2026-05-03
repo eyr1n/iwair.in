@@ -17,7 +17,7 @@ export type EventListeners = {
   [E in keyof HTMLElementEventMap]?: (event: HTMLElementEventMap[E]) => void;
 };
 
-export type Child = Node | string;
+export type Child = string | Node;
 
 function setAttribute(
   element: HTMLElement,

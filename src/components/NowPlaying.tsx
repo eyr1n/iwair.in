@@ -23,7 +23,7 @@ interface SpotifyNowPlaying {
 
 function bindChildren(
   element: HTMLElement,
-  children: () => (Node | string)[],
+  children: () => (string | Node)[],
 ): HTMLElement {
   effect(() => {
     element.replaceChildren(...children());
