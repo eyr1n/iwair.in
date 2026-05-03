@@ -168,7 +168,7 @@
         nowPlaying(null);
       })
       .finally(() => {
-        window.setTimeout(fetchNowPlaying, 30000);
+        setTimeout(fetchNowPlaying, 30000);
       });
 
   fetchNowPlaying();
