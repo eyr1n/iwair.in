@@ -136,25 +136,25 @@
     }, [] as Node[]);
   };
 
-  const container = document.querySelector("[data-nowplaying]")!;
+  const container = document.querySelector("[data-nowplaying]");
   effect(() => {
     container
-      .querySelector("[data-nowplaying-artwork]")
+      ?.querySelector("[data-nowplaying-artwork]")
       ?.replaceChildren(...artworkChildren());
   });
   effect(() => {
     container
-      .querySelector("[data-nowplaying-name]")
+      ?.querySelector("[data-nowplaying-name]")
       ?.replaceChildren(...nameChildren());
   });
   effect(() => {
     container
-      .querySelector("[data-nowplaying-album]")
+      ?.querySelector("[data-nowplaying-album]")
       ?.replaceChildren(...albumChildren());
   });
   effect(() => {
     container
-      .querySelector("[data-nowplaying-artists]")
+      ?.querySelector("[data-nowplaying-artists]")
       ?.replaceChildren(...artistsChildren());
   });
 
