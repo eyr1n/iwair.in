@@ -37,7 +37,7 @@ export function NowPlaying() {
   let timer: number | undefined;
 
   const fetchNowPlaying = () => {
-    fetch("https://nowplaying.iwair.in")
+    fetch("https://nowplaying.eyrin.jp")
       .then((res) => res.json() as Promise<SpotifyNowPlaying>)
       .then((res) => {
         setNowPlaying(res);
