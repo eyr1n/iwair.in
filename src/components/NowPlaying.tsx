@@ -1,12 +1,12 @@
 import {
+  createSignal,
   For,
   Match,
-  Show,
-  Switch,
-  createSignal,
   onCleanup,
   onMount,
-} from "solid-js";
+  Show,
+  Switch,
+} from 'solid-js';
 
 interface SpotifyNowPlaying {
   name: string;
@@ -37,7 +37,7 @@ export function NowPlaying() {
   let timer: number | undefined;
 
   const fetchNowPlaying = () => {
-    fetch("https://nowplaying.eyrin.jp")
+    fetch('https://nowplaying.eyrin.jp')
       .then((res) => res.json() as Promise<SpotifyNowPlaying>)
       .then((res) => {
         setNowPlaying(res);
@@ -109,7 +109,7 @@ export function NowPlaying() {
         </div>
 
         <div class="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
-          💿{" "}
+          💿{' '}
           <Show when={nowPlaying()?.album}>
             {(album) => (
               <a
@@ -125,7 +125,7 @@ export function NowPlaying() {
         </div>
 
         <div class="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
-          👤{" "}
+          👤{' '}
           <For each={nowPlaying()?.artists}>
             {(artist, index) => (
               <>

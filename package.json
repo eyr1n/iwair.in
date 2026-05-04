@@ -10,7 +10,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "prettier --check ."
+    "biome": "biome check",
+    "prettier": "prettier --check **/*.astro"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
@@ -26,6 +27,7 @@
     "vite-tsconfig-paths": "^6.1.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.14",
     "prettier": "3.8.3",
     "prettier-plugin-astro": "0.14.1",
     "prettier-plugin-tailwindcss": "0.8.0"

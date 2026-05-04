@@ -1,6 +1,7 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 @import "@fontsource/anton";
+
+@plugin "@tailwindcss/typography";
 
 @utility chromatic-text {
   @apply relative inline-block font-[Anton] font-normal text-transparent;
