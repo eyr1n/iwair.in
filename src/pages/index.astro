@@ -1,7 +1,5 @@
 ---
-import { Image } from 'astro:assets';
 import { NowPlaying } from '../components/NowPlaying.tsx';
-import rinIwai from '../assets/rin_iwai.png';
 
 import '../styles/global.css';
 
@@ -81,7 +79,6 @@ const links = [
   <body class="bg-[#111111]">
     <main class="prose prose-invert mx-auto max-w-(--breakpoint-md) px-4 py-8">
       <section class="flex flex-col gap-8 md:flex-row md:items-start">
-        <Image src={rinIwai} alt="Rin Iwai" class="not-prose w-40" />
         <div class="chromatic-border p-2">
           <h1>
             <span class="chromatic-text" data-text="Rin Iwai">Rin Iwai</span>
